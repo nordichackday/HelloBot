@@ -45,9 +45,9 @@ namespace HelloBot
                         {
                             init = WitAi.DoType(message.From.Name, init.type);
                         }
-                        if(!string.IsNullOrEmpty(init.msg)) msg += init.msg;
+                        if(!string.IsNullOrEmpty(init.msg)) msg += init.msg + "\n";
                     }
-                    return message.CreateReplyMessage(msg + "\n");
+                    return message.CreateReplyMessage(msg);
                 }
                 if (message.Text == null)
                     return message.CreateReplyMessage("Why do you null me so?");
