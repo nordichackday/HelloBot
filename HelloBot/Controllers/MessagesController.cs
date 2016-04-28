@@ -98,7 +98,7 @@ namespace HelloBot
                 }
                 if (triggerWeatherKeyword != null)
                 {
-                    var suggestion = message.Text.Substring(triggerWeatherKeyword.Length).TrimStart();
+                    var suggestion = message.Text.Substring(triggerWeatherKeyword.Length).TrimStart().Replace("?", string.Empty).TrimEnd();
                     var cities = await new WeatherClient().Request<City[]>($"http://www.dr.dk/tjenester/drvejret/Suggestions?query={suggestion}&maxChoices=50");
                     if (cities.Any())
                     {
@@ -106,7 +106,7 @@ namespace HelloBot
                         var url = $"http://www.dr.dk/tjenester/drvejret/BoxedFromCenter/0/0/6/{city.Name}/{city.Id}";
                         var forecasts = await new WeatherClient().Request<RootObject[]>(url);
                         var nowNext = forecasts.First().Detailed.First().WeatherNowNextNext.First();
-                        return message.CreateReplyMessage($"I {city.Name} er det {nowNext.Prosa}");
+                        return message.CreateReplyMessage($"I {city.Name} er det: {nowNext.T} grader. {nowNext.Prosa}.");
 
                     }
                     else
