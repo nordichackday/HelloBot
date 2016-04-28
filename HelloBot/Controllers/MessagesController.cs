@@ -58,7 +58,7 @@ namespace HelloBot
                     var response = "Der vises følgende på DRs tv kanaler netop nu:\n";
                     var tzInfo = TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
                     
-                    foreach (var nowNext in MUClient.GetNowNextForAllActiveDRChannels())
+                    foreach (var nowNext in MUClient.GetNowNextForAllActiveDRChannels().Where(nn=>nn.Now != null))
                     {
                         
                         response +=
