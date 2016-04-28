@@ -40,14 +40,14 @@ namespace HelloBot
                     {
                         response +=
                             $"\nPå {nowNext.ChannelSlug.ToUpper()} vises der {nowNext.Now.Title}, som startede {nowNext.Now.StartTime:HH:mm}\n\n" +
-                            $"Se live her på  <a href=\"https://www.dr.dk/tv/live/{nowNext.ChannelSlug}/\">{nowNext.ChannelSlug.ToUpper()}</a>\n";
+                            $"Se live her på https://www.dr.dk/tv/live/{nowNext.ChannelSlug}/ \n";
 
                         if (nowNext.Now.ProgramCardHasPrimaryAsset)
                             response +=
-                                $"Det kan ses ondemand allerede nu her på <a href=\"https://www.dr.dk/tv/se/{nowNext.Now.ProgramCard.SeriesSlug}/{nowNext.Now.ProgramCard.Slug}\">DR TV</a>\n";
+                                $"Det kan ses ondemand allerede nu her på https://www.dr.dk/tv/se/{nowNext.Now.ProgramCard.SeriesSlug}/{nowNext.Now.ProgramCard.Slug} \n";
                         else if (nowNext.Now.SeriesHasProgramCardWithPrimaryAsset)
                             response +=
-                               $"Det seneste afsnit kan ses på <a href=\"https://www.dr.dk/tv/se/{nowNext.Now.ProgramCard.SeriesSlug}/\">DR TV</a>\n ";
+                               $"Det seneste afsnit kan ses på https://www.dr.dk/tv/se/{nowNext.Now.ProgramCard.SeriesSlug}/ \n ";
                         
                         
                     }
