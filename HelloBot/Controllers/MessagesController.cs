@@ -23,9 +23,12 @@ namespace HelloBot
         {
             if (message.Type == "Message")
             {
-                // calculate something for us to return
-                int length = (message.Text ?? string.Empty).Length;
                 if (message.Text == "what do we want?") return message.CreateReplyMessage("CAAAAANDYYYYYYY!!!");
+                if (message.Text != null && message.Text.Contains("wit"))
+                {
+                    var response = WitAi.DoStuff(message.Text.Split(new[] {"wit"}, StringSplitOptions.None)[1], message.From.Name);
+                }
+
                 if (message.Text != null && message.Text.ToLower().Contains("pepe"))
                 {
                     var m = message.CreateReplyMessage("As requested:");
