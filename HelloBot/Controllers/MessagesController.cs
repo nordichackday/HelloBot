@@ -39,14 +39,14 @@ namespace HelloBot
                 if (message.Text.ToLower().Contains("nrk"))
                     channelResponse+="Kanskje du finner svaret her http://nrk.no eller \n";
                 if (message.Text.ToLower().Contains("yle"))
-                    channelResponse += "Kanske du hittar svaret här / ehkä löydät vastauksen täältä http://yle.fi \n";
+                    channelResponse += "Kanske du hittar svaret här / ehkä löydät vastauksen täältä http://yle.fi tai \n";
                 if (message.Text.ToLower().Contains("svt"))
-                    channelResponse += "Kanske du hittar svaret här http://svt.se \n";
+                    channelResponse += "Kanske du hittar svaret här http://svt.se eller \n";
                 if (message.Text.ToLowerInvariant().Contains("ruv") )
-                    channelResponse += "Kannski þú munt finna svarið hér http://ruv.is \n";
+                    channelResponse += "Kannski þú munt finna svarið hér http://ruv.is eða \n";
 
                 if (!string.IsNullOrEmpty(channelResponse))
-                    return message.CreateReplyMessage(channelResponse + " or here http://google.com");
+                    return message.CreateReplyMessage(channelResponse + "here http://google.com");
 
                 if ( message.Text.ToLower().Contains("tv"))
                 {
