@@ -42,6 +42,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="DR.Common.RESTClient">
+      <HintPath>..\ExternalReferences\DR.Common.RESTClient.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Bot.Connector, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bot.Connector.1.0.0.0\lib\net45\Microsoft.Bot.Connector.dll</HintPath>
       <Private>True</Private>
@@ -105,6 +108,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="MUClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WitAi.cs" />
   </ItemGroup>

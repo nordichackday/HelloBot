@@ -32,7 +32,28 @@ namespace HelloBot
                     m.Attachments = new List<Attachment> {new Attachment {ContentUrl = "http://i.imgur.com/HWqeKN1.png" , ContentType = "image/png", FallbackText = "Pepe the frog"}};
                     return m;
                 }
-                return message.CreateReplyMessage($"Hi {message.From.Name}! If you grow tired of talking with me just say goodbye!"); 
+                if (message.Text != null && message.Text.ToLower().Contains("tv"))
+                {
+
+                    var response = "Der vises følgende på DRs tv kanaler netop nu:\n";
+                    foreach (var nowNext in MUClient.GetNowNextForAllActiveDRChannels())
+                    {
+                        response +=
+                            $"\nPå {nowNext.ChannelSlug.ToUpper()} vises der {nowNext.Now.Title}, som startede {nowNext.Now.StartTime:HH:mm}\n\n" +
+                            $"Se live her på  <a href=\"https://www.dr.dk/tv/live/{nowNext.ChannelSlug}/\">{nowNext.ChannelSlug.ToUpper()}</a>\n";
+
+                        if (nowNext.Now.ProgramCardHasPrimaryAsset)
+                            response +=
+                                $"Det kan ses ondemand allerede nu her på <a href=\"https://www.dr.dk/tv/se/{nowNext.Now.ProgramCard.SeriesSlug}/{nowNext.Now.ProgramCard.Slug}\">DR TV</a>\n";
+                        else if (nowNext.Now.SeriesHasProgramCardWithPrimaryAsset)
+                            response +=
+                               $"Det seneste afsnit kan ses på <a href=\"https://www.dr.dk/tv/se/{nowNext.Now.ProgramCard.SeriesSlug}/\">DR TV</a>\n ";
+                        
+                        
+                    }
+                    return message.CreateReplyMessage(response);
+                }
+                    return message.CreateReplyMessage($"Hi {message.From.Name}! If you grow tired of talking with me just say goodbye!"); 
                
             }
             else
