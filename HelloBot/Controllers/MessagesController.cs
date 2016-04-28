@@ -26,7 +26,9 @@ namespace HelloBot
                 int length = (message.Text ?? string.Empty).Length;
 
                 // return our reply to the user
-                return message.CreateReplyMessage($"You sent {length} characters. Team Pepe 4 ever.");
+                var msg = message.CreateReplyMessage($"Hello {message.From.Name}. Why do you say {message.Text}? \n Debuginfo :  ChannelMessageId: {message.ChannelMessageId} ConversationId: {message.ConversationId} SourceLanguage: {message.SourceLanguage}.");
+                
+                return msg;
             }
             else
             {
