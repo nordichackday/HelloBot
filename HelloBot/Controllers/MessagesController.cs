@@ -55,7 +55,21 @@ namespace HelloBot
                     }
                     return message.CreateReplyMessage(response);
                 }
-                    return message.CreateReplyMessage($"Hi {message.From.Name}! If you grow tired of talking with me just say goodbye!"); 
+                if (message.Text != null && message.Text.ToLower().Contains("vejret"))
+                {
+                    var suggestion = message.Text.Substring("vejret ".Length);
+                    var cities = await new WeatherClient().Request<City[]>($"http://www.dr.dk/tjenester/drvejret/Suggestions?query={suggestion}&maxChoices=50");
+                    if (cities.Any())
+                    {
+                        var city = cities.First();
+                        var url = $"http://www.dr.dk/tjenester/drvejret/BoxedFromCenter/0/0/6/{city.Name}/{city.Id}";
+                        var forecasts = await new WeatherClient().Request<RootObject[]>(url);
+                        var nowNext = forecasts.First().Detailed.First().WeatherNowNextNext.First();
+                        return message.CreateReplyMessage($"I {city.Name} er det {nowNext.Prosa}");
+                   
+                    }
+                }
+                return message.CreateReplyMessage($"Hi {message.From.Name}! If you grow tired of talking with me just say goodbye!"); 
                
             }
             else
