@@ -24,9 +24,9 @@ namespace HelloBot
             {
                 // calculate something for us to return
                 int length = (message.Text ?? string.Empty).Length;
-
-                var msg = message.CreateReplyMessage($"Hi {message.From.Name}! If you grow tired of talking with me just say goodbye!"); 
-                return msg;
+                if (message.Text == "what do we want?") return message.CreateReplyMessage("CAAAAANDYYYYYYY!!!");
+                return message.CreateReplyMessage($"Hi {message.From.Name}! If you grow tired of talking with me just say goodbye!"); 
+               
             }
             else
             {
