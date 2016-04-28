@@ -35,23 +35,17 @@ namespace HelloBot
                     {
                         if (init.type.ToLower() == "merge")
                         {
-                            init = WitAi.DoAction(message.From.Name, init.action);
-                            msg += init.msg;
-
+                            init = WitAi.DoAction(message.From.Name, "merge");
                         }
                         else if (init.type.ToLower() == "action")
                         {
                             init = WitAi.DoAction(message.From.Name, init.action);
-                           
-
                         }
                         else if(init.type.ToLower() == "msg")
                         {
-
                             init = WitAi.DoType(message.From.Name, init.type);
-                            msg += init.msg;
-                            
                         }
+                        if(!string.IsNullOrEmpty(init.msg)) msg += init.msg;
                     }
                     return message.CreateReplyMessage(msg);
                 }
