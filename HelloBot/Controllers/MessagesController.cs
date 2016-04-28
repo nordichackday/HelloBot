@@ -36,10 +36,12 @@ namespace HelloBot
                 {
 
                     var response = "Der vises følgende på DRs tv kanaler netop nu:\n";
+                    var tzInfo = TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
+                    
                     foreach (var nowNext in MUClient.GetNowNextForAllActiveDRChannels())
                     {
                         response +=
-                            $"\nPå {nowNext.ChannelSlug.ToUpper()} vises der {nowNext.Now.Title}, som startede {nowNext.Now.StartTime:HH:mm}\n\n" +
+                            $"\nPå {nowNext.ChannelSlug.ToUpper()} vises der {nowNext.Now.Title}, som startede {TimeZoneInfo.ConvertTimeFromUtc(nowNext.Now.StartTime,tzInfo):HH:mm}\n\n" +
                             $"Se live her på https://www.dr.dk/tv/live/{nowNext.ChannelSlug}/ \n";
 
                         if (nowNext.Now.ProgramCardHasPrimaryAsset)
