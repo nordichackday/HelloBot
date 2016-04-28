@@ -50,45 +50,38 @@ namespace HelloBot
                       var regex = new Regex("wit", RegexOptions.IgnoreCase);
                       return regex.Match(message.Text).Success;
                   }, (context, message) =>
-                  {
-                      var msg = "";
-                      var name = message.From.Name;
-                      var init = WitAi.Init(message.Text.Split(new[] { "wit" }, StringSplitOptions.None)[1], name);
+                       {
+                           var msg = "";
+                           var init = WitAi.Init(message.Text.Split(new[] { "wit" }, StringSplitOptions.None)[1], message.From.Name);
 
-                      while (init.type.ToLower() != "stop")
-                      {
-                          if (init.type.ToLower() == "merge")
-                          {
-                              init = WitAi.DoAction(name, init.action);
-                              msg += init.msg;
-
-                          }
-                          else if (init.type.ToLower() == "action")
-                          {
-                              init = WitAi.DoAction(name, init.action);
-
-
-                          }
-                          else if (init.type.ToLower() == "msg")
-                          {
-
-                              init = WitAi.DoType(name, init.type);
-                              msg += init.msg;
-
-                          }
-                      }
-                      return Chain.Return(msg);
-                  })
+                           while (init.type.ToLower() != "stop")
+                           {
+                               if (init.type.ToLower() == "merge")
+                               {
+                                   init = WitAi.DoAction(message.From.Name, "merge");
+                               }
+                               else if (init.type.ToLower() == "action")
+                               {
+                                   init = WitAi.DoAction(message.From.Name, init.action);
+                               }
+                               else if (init.type.ToLower() == "msg")
+                               {
+                                   init = WitAi.DoType(message.From.Name, init.type);
+                               }
+                               if (!string.IsNullOrEmpty(init.msg)) msg += init.msg + "\n";
+                           }
+                           return Chain.Return(msg);
+                       })
             ,
-                 /*  new Case<Message, IDialog<string>>(message =>
-                   {
-                       var regex = new Regex("what do we want", RegexOptions.IgnoreCase);
-                       return regex.Match(message.Text).Success;
-                   }, (context, message) =>
-                   {
-                       var msg = "*";
-                       return Chain.Return(msg);
-                   }),*/
+              /*  new Case<Message, IDialog<string>>(message =>
+                {
+                    var regex = new Regex("what do we want", RegexOptions.IgnoreCase);
+                    return regex.Match(message.Text).Success;
+                }, (context, message) =>
+                {
+                    var msg = "*";
+                    return Chain.Return(msg);
+                }),*/
               new DefaultCase<Message, IDialog<string>>((context, message) =>
               {
 
@@ -98,7 +91,7 @@ namespace HelloBot
                       return
                           Chain.Return(
                               "Hello @mr.roboto , goddag og tak for tippet. Hvordan er vejret og hvad er nyheder?");
-            
+
                   var channelResponse = "";
                   if (message.Text.ToLower().Contains("nrk"))
                       channelResponse += "Kanskje du finner svaret her http://nrk.no eller \n";
@@ -136,36 +129,27 @@ namespace HelloBot
                       }
                       return Chain.Return(response);
                   }
-                  var danishWeatherKeywords = new[] { "vejret", "vejret i", "hvordan er vejret", "hvordan er vejret i" };
-                  var norwegianWeatheKeywords = new[] { "vær", "vær i", "hvordan er været", "hvordan er været i" };
-                  var swedishWeatheKeywords = new[] { "väder", "väder i", "hur är vädret", "hur är vädret i" };
-                  var finishWeatherKeywords = new[] { "miten sää", "sää" };
-                  var weatherKeywords = new List<string[]>() { danishWeatherKeywords, norwegianWeatheKeywords, swedishWeatheKeywords, finishWeatherKeywords };
-                  string triggerWeatherKeyword = null;
-                  foreach (var weatherKeywordCollection in weatherKeywords)
-                  {
-                      foreach (var weatherKeyword in weatherKeywordCollection.OrderByDescending(x => x.Length))
-                      {
-                          if (message.Text.ToLower().Contains(weatherKeyword + " "))
-                          {
-                              triggerWeatherKeyword = weatherKeyword;
-                              break;
-                          }
-                      }
 
-                  }
+                  var triggerWeatherKeyword = new Weather.Keyword().FindOrDefault(message.Text);
+
                   if (triggerWeatherKeyword != null)
                   {
-                      var suggestion = message.Text.Substring(triggerWeatherKeyword.Length).TrimStart().Replace("?", string.Empty).TrimEnd();
-                      var cities = Weather.WeatherClient.GetCity(suggestion);
+                      var weatherClient = new Weather.RequestClient();
+                      var i = message.Text.IndexOf(triggerWeatherKeyword, StringComparison.InvariantCultureIgnoreCase) + triggerWeatherKeyword.Length;
+                      var suggestion = message.Text.Substring(i).TrimStart().Replace("?", string.Empty).TrimEnd();
+                      var cities = weatherClient.GetCity(suggestion);
                       if (cities.Any())
                       {
-                          var tuple = Weather.WeatherClient.GetCurrentWeather(cities);
+                          var tuple = weatherClient.GetCurrentWeather(cities);
                           var city = tuple.Item1;
                           var nowNext = tuple.Item2;
-                          return Chain.Return($"I {city.Name} er det: {nowNext.T} grader. {nowNext.Prosa}.");
+                          var now = nowNext.First();
+                          var next = nowNext.Skip(1).First();
+                          var nextNext = nowNext.Skip(2).First();
+                          return Chain.Return($"I {city.Name} er det lige nu {now.T}°. {now.Prosa}. \n \n I {next.Dtt.ToLower()} forventer vi {next.T}°. {next.Prosa}. \n \n Og i {nextNext.Dtt.ToLower()} {nextNext.T}°. {nextNext.Prosa}.");
 
                       }
+
                       else
                       {
                           return
