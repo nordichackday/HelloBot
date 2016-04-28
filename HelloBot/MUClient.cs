@@ -14,6 +14,11 @@ namespace HelloBot
         {
             return JsonClient.Get<IEnumerable<NowNext>>("/schedule/nownext-for-all-active-dr-tv-channels/");
         }
+
+        public static Channel GetChannel(string id)
+        {
+            return JsonClient.Get<Channel>($"/channel/{id}");
+        }
         public class NowNext
         {
             public string ChannelSlug { get; set; }
@@ -38,6 +43,13 @@ namespace HelloBot
             public string PrimaryImageUri { get; set; }
             public string SeriesTitle { get; set; }
             public string SeriesSlug { get; set; }
+        }
+
+        public class Channel
+        {
+            public string Title { get; set; }
+            public string Slug { get; set; }
+            public string PrimaryImageUri { get; set; }
         }
         
     }
