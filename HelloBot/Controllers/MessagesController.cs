@@ -105,7 +105,8 @@ namespace HelloBot
                 if (triggerWeatherKeyword != null)
                 {
                     var weatherClient = new Weather.RequestClient();
-                    var suggestion = message.Text.Substring(triggerWeatherKeyword.Length).TrimStart().Replace("?", string.Empty).TrimEnd();
+                    var i = message.Text.IndexOf(triggerWeatherKeyword, StringComparison.InvariantCultureIgnoreCase) + triggerWeatherKeyword.Length;
+                    var suggestion = message.Text.Substring(i).TrimStart().Replace("?", string.Empty).TrimEnd();
                     var cities = weatherClient.GetCity(suggestion);
                     if (cities.Any())
                     {
