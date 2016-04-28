@@ -90,7 +90,8 @@ namespace HelloBot
                    
                     }
                 }
-                return message.CreateReplyMessage($"Hi {message.From.Name}! If you grow tired of talking with me just say goodbye!"); 
+                return message.CreateReplyMessage($"Hi {message.From.Name}! Here is a Chuck Noris fact: \n {Jokes.Random()}. \n \n If you grow tired of talking with me just say goodbye!"); 
+
                
             }
             else
