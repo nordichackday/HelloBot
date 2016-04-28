@@ -29,6 +29,10 @@ namespace HelloBot
                     return message.CreateReplyMessage("Why do you null me so?");
 
                 if (message.Text == "what do we want?") return message.CreateReplyMessage("CAAAAANDYYYYYYY!!!");
+                if (message.Text.ToLower().Contains("mr.roboto"))
+                    return
+                        message.CreateReplyMessage(
+                            "Hello @mr.roboto , goddag og tak for tippet. Hvordan er vejret og hvad er nyheder?");
                 if (message.Text.ToLower().Contains("pepe"))
                 {
                     var m = message.CreateReplyMessage("As requested:");
