@@ -25,14 +25,30 @@ namespace HelloBot
             {
                 // calculate something for us to return
                 int length = (message.Text ?? string.Empty).Length;
+                if (message.Text == null)
+                    return message.CreateReplyMessage("Why do you null me so?");
+
                 if (message.Text == "what do we want?") return message.CreateReplyMessage("CAAAAANDYYYYYYY!!!");
-                if (message.Text != null && message.Text.ToLower().Contains("pepe"))
+                if (message.Text.ToLower().Contains("pepe"))
                 {
                     var m = message.CreateReplyMessage("As requested:");
                     m.Attachments = new List<Attachment> {new Attachment {ContentUrl = "http://i.imgur.com/HWqeKN1.png" , ContentType = "image/png", FallbackText = "Pepe the frog"}};
                     return m;
                 }
-                if (message.Text != null && message.Text.ToLower().Contains("tv"))
+                var channelResponse = "";
+                if (message.Text.ToLower().Contains("nrk"))
+                    channelResponse+="Kanskje du finner svaret her http://nrk.no eller \n";
+                if (message.Text.ToLower().Contains("yle"))
+                    channelResponse += "Kanske du hittar svaret här / ehkä löydät vastauksen täältä http://yle.fi \n";
+                if (message.Text.ToLower().Contains("svt"))
+                    channelResponse += "Kanske du hittar svaret här http://svt.se \n";
+                if (message.Text.ToLowerInvariant().Contains("ruv") )
+                    channelResponse += "Kannski þú munt finna svarið hér http://ruv.is \n";
+
+                if (!string.IsNullOrEmpty(channelResponse))
+                    return message.CreateReplyMessage(channelResponse + " or here http://google.com");
+
+                if ( message.Text.ToLower().Contains("tv"))
                 {
 
                     var response = "Der vises følgende på DRs tv kanaler netop nu:\n";
@@ -40,8 +56,9 @@ namespace HelloBot
                     
                     foreach (var nowNext in MUClient.GetNowNextForAllActiveDRChannels())
                     {
+                        
                         response +=
-                            $"\nPå {nowNext.ChannelSlug.ToUpper()} vises der {nowNext.Now.Title}, som startede {TimeZoneInfo.ConvertTimeFromUtc(nowNext.Now.StartTime,tzInfo):HH:mm}\n\n" +
+                            $"\nPå {MUClient.GetChannel(nowNext.ChannelSlug).Title} vises der {nowNext.Now.Title}, som startede {TimeZoneInfo.ConvertTimeFromUtc(nowNext.Now.StartTime,tzInfo):HH:mm}\n\n" +
                             $"Se live her på https://www.dr.dk/tv/live/{nowNext.ChannelSlug}/ \n";
 
                         if (nowNext.Now.ProgramCardHasPrimaryAsset)
