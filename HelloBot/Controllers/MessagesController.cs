@@ -26,7 +26,7 @@ namespace HelloBot
                 int length = (message.Text ?? string.Empty).Length;
 
                 // return our reply to the user
-                return message.CreateReplyMessage($"You sent {length} characters");
+                return message.CreateReplyMessage($"You sent {length} characters. Team Pepe 4 ever.");
             }
             else
             {
