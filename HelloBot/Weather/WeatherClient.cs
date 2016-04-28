@@ -14,7 +14,7 @@ namespace HelloBot.Weather
             return JsonClient.Get<City[]>($"/Suggestions?query={suggestion}&maxChoices=50");
         }
 
-        public Tuple<City, WeatherNowNextNext> GetCurrentWeather(IEnumerable<City> cities)
+        public Tuple<City, IEnumerable<WeatherNowNextNext>> GetCurrentWeather(IEnumerable<City> cities)
         {
             var city = cities.First();
             var forecasts = JsonClient.Get<WeatherObject[]>($"/BoxedFromCenter/0/0/6/{city.Name}/{city.Id}");
@@ -23,7 +23,7 @@ namespace HelloBot.Weather
                 var detailed = forecasts.First().Detailed;
                 if (detailed != null && detailed.Any())
                 {
-                    return new Tuple<City, WeatherNowNextNext>(city, detailed.First().WeatherNowNextNext.FirstOrDefault());
+                    return new Tuple<City, IEnumerable<WeatherNowNextNext>>(city, detailed.First().WeatherNowNextNext);
                 }
             }
 
