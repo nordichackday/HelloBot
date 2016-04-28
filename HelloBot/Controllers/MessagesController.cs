@@ -79,31 +79,16 @@ namespace HelloBot
                     }
                     return message.CreateReplyMessage(response);
                 }
-                var danishWeatherKeywords = new[] {"vejret", "vejret i", "hvordan er vejret", "hvordan er vejret i"};
-                var norwegianWeatheKeywords = new[] { "vær", "vær i", "hvordan er været", "hvordan er været i"};
-                var swedishWeatheKeywords = new[] { "väder", "väder i", "hur är vädret", "hur är vädret i" };
-                var finishWeatherKeywords = new[] {"miten sää", "sää"};
-                var weatherKeywords = new List<string[]>() {danishWeatherKeywords, norwegianWeatheKeywords, swedishWeatheKeywords, finishWeatherKeywords };
-                string triggerWeatherKeyword = null;
-                foreach (var weatherKeywordCollection in weatherKeywords)
-                {
-                    foreach (var weatherKeyword in weatherKeywordCollection.OrderByDescending(x => x.Length))
-                    {
-                        if (message.Text.ToLower().Contains(weatherKeyword + " "))
-                        {
-                            triggerWeatherKeyword = weatherKeyword;
-                            break;
-                        }
-                    }
-                    
-                }
+
+                var triggerWeatherKeyword = new Weather.Keyword().FindOrDefault(message.Text);
                 if (triggerWeatherKeyword != null)
                 {
+                    var weatherClient = new Weather.RequestClient();
                     var suggestion = message.Text.Substring(triggerWeatherKeyword.Length).TrimStart().Replace("?", string.Empty).TrimEnd();
-                    var cities = Weather.WeatherClient.GetCity(suggestion);
+                    var cities = weatherClient.GetCity(suggestion);
                     if (cities.Any())
                     {
-                        var tuple = Weather.WeatherClient.GetCurrentWeather(cities);
+                        var tuple = weatherClient.GetCurrentWeather(cities);
                         var city = tuple.Item1;
                         var nowNext = tuple.Item2;
                         return message.CreateReplyMessage($"I {city.Name} er det: {nowNext.T} grader. {nowNext.Prosa}.");
