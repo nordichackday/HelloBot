@@ -116,7 +116,7 @@ namespace HelloBot
                         var now = nowNext.First();
                         var next = nowNext.Skip(1).First();
                         var nextNext = nowNext.Skip(2).First();
-                        return message.CreateReplyMessage($"I {city.Name} er det lige nu {now.T}°. {now.Prosa}. \n \n I {next.Dtt.ToLower()} forventer vi {next.T}°. {next.Prosa}. \n \n Og i {nextNext.Dtt.ToLower()} {nextNext.T}°. {nextNext.Prosa}.");
+                        return message.CreateReplyMessage($"> I {city.Name} er det lige nu {now.T}°. {now.Prosa}. \n \n > I {next.Dtt.ToLower()} forventer vi {next.T}°. {next.Prosa}. \n \n > Og i {nextNext.Dtt.ToLower()} {nextNext.T}°. {nextNext.Prosa}.");
 
                     }
                     else
