@@ -23,8 +23,10 @@ namespace HelloBot
         {
             if (message.Type == "Message")
             {
-                // calculate something for us to return
-                int length = (message.Text ?? string.Empty).Length;
+                if (message.Text != null && message.Text.Contains("wit"))
+                {
+                    var response = WitAi.Init(message.Text.Split(new[] { "wit" }, StringSplitOptions.None)[1], message.From.Name);
+                }
                 if (message.Text == null)
                     return message.CreateReplyMessage("Why do you null me so?");
 

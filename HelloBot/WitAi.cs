@@ -46,25 +46,6 @@ namespace HelloBot
 
         }
     }
-
-    //public class Intent
-    //    {
-    //        public string value { get; set; }
-    //    }
-
-    //    public class Entities
-    //    {
-    //        public List<Intent> intent { get; set; }
-    //    }
-
-    //    public class RootObject
-    //    {
-    //        public int confidence { get; set; }
-    //        public string type { get; set; }
-    //        public Entities entities { get; set; }
-    //    }
-
-
     public class Value
     {
         public string type { get; set; }
