@@ -23,19 +23,99 @@ namespace HelloBot
         {
             if (message.Type == "Message")
             {
-                if (message.Text == "what do we want?") return message.CreateReplyMessage("CAAAAANDYYYYYYY!!!");
-                if (message.Text != null && message.Text.Contains("wit"))
-                {
-                    var response = WitAi.DoStuff(message.Text.Split(new[] {"wit"}, StringSplitOptions.None)[1], message.From.Name);
-                }
+                // calculate something for us to return
+                int length = (message.Text ?? string.Empty).Length;
+                if (message.Text == null)
+                    return message.CreateReplyMessage("Why do you null me so?");
 
-                if (message.Text != null && message.Text.ToLower().Contains("pepe"))
+                if (message.Text == "what do we want?") return message.CreateReplyMessage("CAAAAANDYYYYYYY!!!");
+                if (message.Text.ToLower().Contains("mr.roboto"))
+                    return
+                        message.CreateReplyMessage(
+                            "Hello @mr.roboto , goddag og tak for tippet. Hvordan er vejret og hvad er nyheder?");
+                if (message.Text.ToLower().Contains("pepe"))
                 {
                     var m = message.CreateReplyMessage("As requested:");
                     m.Attachments = new List<Attachment> {new Attachment {ContentUrl = "http://i.imgur.com/HWqeKN1.png" , ContentType = "image/png", FallbackText = "Pepe the frog"}};
                     return m;
                 }
-                return message.CreateReplyMessage($"Hi {message.From.Name}! If you grow tired of talking with me just say goodbye!"); 
+                var channelResponse = "";
+                if (message.Text.ToLower().Contains("nrk"))
+                    channelResponse+="Kanskje du finner svaret her http://nrk.no eller \n";
+                if (message.Text.ToLower().Contains("yle"))
+                    channelResponse += "Kanske du hittar svaret här / ehkä löydät vastauksen täältä http://yle.fi tai \n";
+                if (message.Text.ToLower().Contains("svt"))
+                    channelResponse += "Kanske du hittar svaret här http://svt.se eller \n";
+                if (message.Text.ToLowerInvariant().Contains("ruv") )
+                    channelResponse += "Kannski þú munt finna svarið hér http://ruv.is eða \n";
+
+                if (!string.IsNullOrEmpty(channelResponse))
+                    return message.CreateReplyMessage(channelResponse + "here http://google.com");
+
+                if ( message.Text.ToLower().Contains("tv"))
+                {
+
+                    var response = "Der vises følgende på DRs tv kanaler netop nu:\n";
+                    var tzInfo = TimeZoneInfo.FindSystemTimeZoneById("Central Europe Standard Time");
+                    
+                    foreach (var nowNext in MUClient.GetNowNextForAllActiveDRChannels().Where(nn=>nn.Now != null))
+                    {
+                        
+                        response +=
+                            $"\nPå {MUClient.GetChannel(nowNext.ChannelSlug).Title} vises der {nowNext.Now.Title}, som startede {TimeZoneInfo.ConvertTimeFromUtc(nowNext.Now.StartTime,tzInfo):HH:mm}\n\n" +
+                            $"Se live her på https://www.dr.dk/tv/live/{nowNext.ChannelSlug}/ \n";
+
+                        if (nowNext.Now.ProgramCardHasPrimaryAsset)
+                            response +=
+                                $"Det kan ses ondemand allerede nu her på https://www.dr.dk/tv/se/{nowNext.Now.ProgramCard.SeriesSlug}/{nowNext.Now.ProgramCard.Slug} \n";
+                        else if (nowNext.Now.SeriesHasProgramCardWithPrimaryAsset)
+                            response +=
+                               $"Det seneste afsnit kan ses på https://www.dr.dk/tv/se/{nowNext.Now.ProgramCard.SeriesSlug}/ \n ";
+                        
+                        
+                    }
+                    return message.CreateReplyMessage(response);
+                }
+                var danishWeatherKeywords = new[] {"vejret", "vejret i", "hvordan er vejret", "hvordan er vejret i"};
+                var norwegianWeatheKeywords = new[] { "vær", "vær i", "hvordan er været", "hvordan er været i"};
+                var swedishWeatheKeywords = new[] { "väder", "väder i", "hur är vädret", "hur är vädret i" };
+                var finishWeatherKeywords = new[] {"miten sää", "sää"};
+                var weatherKeywords = new List<string[]>() {danishWeatherKeywords, norwegianWeatheKeywords, swedishWeatheKeywords, finishWeatherKeywords };
+                string triggerWeatherKeyword = null;
+                foreach (var weatherKeywordCollection in weatherKeywords)
+                {
+                    foreach (var weatherKeyword in weatherKeywordCollection.OrderByDescending(x => x.Length))
+                    {
+                        if (message.Text.ToLower().Contains(weatherKeyword + " "))
+                        {
+                            triggerWeatherKeyword = weatherKeyword;
+                            break;
+                        }
+                    }
+                    
+                }
+                if (triggerWeatherKeyword != null)
+                {
+                    var suggestion = message.Text.Substring(triggerWeatherKeyword.Length).TrimStart();
+                    var cities = await new WeatherClient().Request<City[]>($"http://www.dr.dk/tjenester/drvejret/Suggestions?query={suggestion}&maxChoices=50");
+                    if (cities.Any())
+                    {
+                        var city = cities.First();
+                        var url = $"http://www.dr.dk/tjenester/drvejret/BoxedFromCenter/0/0/6/{city.Name}/{city.Id}";
+                        var forecasts = await new WeatherClient().Request<RootObject[]>(url);
+                        var nowNext = forecasts.First().Detailed.First().WeatherNowNextNext.First();
+                        return message.CreateReplyMessage($"I {city.Name} er det {nowNext.Prosa}");
+
+                    }
+                    else
+                    {
+                        return
+                            message.CreateReplyMessage(
+                                $"Jeg kender ingen byer der hedder {suggestion}, beklager. :pepe:");
+                    }
+                }
+                return message.CreateReplyMessage($"Hi {message.From.Name}! Here is a Chuck Noris fact: \n {Jokes.Random()}. \n \n If you grow tired of talking with me just say goodbye!"); 
+
                
             }
             else
