@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -25,6 +26,12 @@ namespace HelloBot
                 // calculate something for us to return
                 int length = (message.Text ?? string.Empty).Length;
                 if (message.Text == "what do we want?") return message.CreateReplyMessage("CAAAAANDYYYYYYY!!!");
+                if (message.Text != null && message.Text.ToLower().Contains("pepe"))
+                {
+                    var m = message.CreateReplyMessage("As requested:");
+                    m.Attachments = new List<Attachment> {new Attachment {ContentUrl = "http://i.imgur.com/HWqeKN1.png" , ContentType = "image/png", FallbackText = "Pepe the frog"}};
+                    return m;
+                }
                 return message.CreateReplyMessage($"Hi {message.From.Name}! If you grow tired of talking with me just say goodbye!"); 
                
             }
