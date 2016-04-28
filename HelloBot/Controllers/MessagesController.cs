@@ -76,9 +76,27 @@ namespace HelloBot
                     }
                     return message.CreateReplyMessage(response);
                 }
-                if (message.Text != null && message.Text.ToLower().Contains("vejret"))
+                var danishWeatherKeywords = new[] {"vejret", "vejret i", "hvordan er vejret", "hvordan er vejret i"};
+                var norwegianWeatheKeywords = new[] { "vær", "vær i", "hvordan er været", "hvordan er været i"};
+                var swedishWeatheKeywords = new[] { "väder", "väder i", "hur är vädret", "hur är vädret i" };
+                var finishWeatherKeywords = new[] {"miten sää", "sää"};
+                var weatherKeywords = new List<string[]>() {danishWeatherKeywords, norwegianWeatheKeywords, swedishWeatheKeywords, finishWeatherKeywords };
+                string triggerWeatherKeyword = null;
+                foreach (var weatherKeywordCollection in weatherKeywords)
                 {
-                    var suggestion = message.Text.Substring("vejret ".Length);
+                    foreach (var weatherKeyword in weatherKeywordCollection.OrderByDescending(x => x.Length))
+                    {
+                        if (message.Text.ToLower().Contains(weatherKeyword + " "))
+                        {
+                            triggerWeatherKeyword = weatherKeyword;
+                            break;
+                        }
+                    }
+                    
+                }
+                if (triggerWeatherKeyword != null)
+                {
+                    var suggestion = message.Text.Substring(triggerWeatherKeyword.Length).TrimStart();
                     var cities = await new WeatherClient().Request<City[]>($"http://www.dr.dk/tjenester/drvejret/Suggestions?query={suggestion}&maxChoices=50");
                     if (cities.Any())
                     {
