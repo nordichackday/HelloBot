@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Configuration;
 using System.Net.Http;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -26,7 +28,26 @@ namespace HelloBot
             {
                 if (message.Text != null && message.Text.Contains("wit"))
                 {
-                    var response = WitAi.Init(message.Text.Split(new[] { "wit" }, StringSplitOptions.None)[1], message.From.Name);
+                    var msg = "";
+                    var init = WitAi.Init(message.Text.Split(new[] { "wit" }, StringSplitOptions.None)[1], message.From.Name);
+                    
+                    while (init.type.ToLower() != "stop")
+                    {
+                        if (init.type.ToLower() == "merge")
+                        {
+                            init = WitAi.DoAction(message.From.Name, "merge");
+                        }
+                        else if (init.type.ToLower() == "action")
+                        {
+                            init = WitAi.DoAction(message.From.Name, init.action);
+                        }
+                        else if(init.type.ToLower() == "msg")
+                        {
+                            init = WitAi.DoType(message.From.Name, init.type);
+                        }
+                        if(!string.IsNullOrEmpty(init.msg)) msg += init.msg;
+                    }
+                    return message.CreateReplyMessage(msg);
                 }
                 if (message.Text == null)
                     return message.CreateReplyMessage("Why do you null me so?");
