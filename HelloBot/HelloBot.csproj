@@ -124,7 +124,7 @@
     <Compile Include="Jokes.cs" />
     <Compile Include="MUClient.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WitAi.cs" />
+    <Compile Include="WitAI\WitAi.cs" />
     <Compile Include="WeatherClient.cs" />
   </ItemGroup>
   <ItemGroup>
