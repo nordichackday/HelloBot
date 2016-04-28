@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HelloBot
+namespace HelloBot.Weather
 {
     [Serializable]
     public class WeatherNowNextNext
@@ -90,7 +90,7 @@ namespace HelloBot
     }
 
     [Serializable]
-    public class RootObject
+    public class WeatherObject
     {
         public List<Detailed> Detailed { get; set; }
         public List<WeatherLocation> WeatherLocation { get; set; }
