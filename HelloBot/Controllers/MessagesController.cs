@@ -47,7 +47,7 @@ namespace HelloBot
                         }
                         if(!string.IsNullOrEmpty(init.msg)) msg += init.msg;
                     }
-                    return message.CreateReplyMessage(msg);
+                    return message.CreateReplyMessage(msg + "\n");
                 }
                 if (message.Text == null)
                     return message.CreateReplyMessage("Why do you null me so?");
