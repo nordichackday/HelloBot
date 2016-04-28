@@ -105,7 +105,13 @@ namespace HelloBot
                         var forecasts = await new WeatherClient().Request<RootObject[]>(url);
                         var nowNext = forecasts.First().Detailed.First().WeatherNowNextNext.First();
                         return message.CreateReplyMessage($"I {city.Name} er det {nowNext.Prosa}");
-                   
+
+                    }
+                    else
+                    {
+                        return
+                            message.CreateReplyMessage(
+                                $"Jeg kender ingen byer der hedder {suggestion}, beklager. :pepe:");
                     }
                 }
                 return message.CreateReplyMessage($"Hi {message.From.Name}! Here is a Chuck Noris fact: \n {Jokes.Random()}. \n \n If you grow tired of talking with me just say goodbye!"); 
