@@ -28,8 +28,10 @@ namespace HelloBot.Weather
 
         public string FindPrognoseOrDefault(string message)
         {
-            var danishWeatherKeywords = new[] { "prognose for", "prognose" };
-            var weatherKeywords = new List<string[]>() { danishWeatherKeywords };
+            var danishWeatherKeywords = new[] { "prognose", "prognose for", "prognosen for" };
+            var swedishWeatheKeywords = new[] { "prognos", "prognos för", "prognosen för" };
+            var finishWeatherKeywords = new[] { "ennuste", "miten on ennuste" };
+            var weatherKeywords = new List<string[]>() { danishWeatherKeywords, swedishWeatheKeywords, finishWeatherKeywords };
             foreach (var weatherKeywordCollection in weatherKeywords)
             {
                 foreach (var weatherKeyword in weatherKeywordCollection.OrderByDescending(x => x.Length))
