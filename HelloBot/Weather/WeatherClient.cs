@@ -29,5 +29,21 @@ namespace HelloBot.Weather
 
             return null;
         }
+
+        public Tuple<City, IEnumerable<WeatherNextFiveDay>> GetPrognoseWeather(IEnumerable<City> cities)
+        {
+            var city = cities.First();
+            var forecasts = JsonClient.Get<WeatherObject[]>($"/BoxedFromCenter/0/0/6/{city.Name}/{city.Id}");
+            if (forecasts != null && forecasts.Any())
+            {
+                var detailed = forecasts.Last().Detailed;
+                if (detailed != null && detailed.Any())
+                {
+                    return new Tuple<City, IEnumerable<WeatherNextFiveDay>>(city, detailed.First().WeatherNextFiveDays);
+                }
+            }
+
+            return null;
+        }
     }
 }

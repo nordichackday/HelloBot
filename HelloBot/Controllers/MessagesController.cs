@@ -130,8 +130,9 @@ namespace HelloBot
                       return Chain.Return(response);
                   }
 
-                  var triggerWeatherKeyword = new Weather.Keyword().FindOrDefault(message.Text);
+                  var keywordr = new Weather.Keyword();
 
+                  var triggerWeatherKeyword = keywordr.FindOrDefault(message.Text);
                   if (triggerWeatherKeyword != null)
                   {
                       var weatherClient = new Weather.RequestClient();
@@ -157,6 +158,33 @@ namespace HelloBot
                                   $"Jeg kender ingen byer der hedder {suggestion}, beklager. :pepe:");
                       }
                   }
+
+                  var prognoseWeatherKeyword = keywordr.FindPrognoseOrDefault(message.Text);
+                  if (prognoseWeatherKeyword != null)
+                  {
+                      var weatherClient = new Weather.RequestClient();
+                      var i = message.Text.IndexOf(prognoseWeatherKeyword, StringComparison.InvariantCultureIgnoreCase) + prognoseWeatherKeyword.Length;
+                      var suggestion = message.Text.Substring(i).TrimStart().Replace("?", string.Empty).TrimEnd();
+                      var cities = weatherClient.GetCity(suggestion);
+                      if (cities.Any())
+                      {
+                          var tuple = weatherClient.GetPrognoseWeather(cities);
+                          var city = tuple.Item1;
+                          var nowNext = tuple.Item2;
+                          var s = $"> Prognose for {city.Name}. \n \n";
+                          s = nowNext.Skip(1).Select(x => $"> {x.Dtt}: {x.T}°. {x.Prosa}.\n \n").Aggregate(s, (current, t) => current + t);
+                          return Chain.Return(s);
+
+                      }
+
+                      else
+                      {
+                          return
+                              Chain.Return(
+                                  $"Jeg kender ingen byer der hedder {suggestion}, beklager. :pepe:");
+                      }
+                  }
+
                   var name = message.From.Name;
                   string reply = $"Hi {name}! Here is a Chuck Noris fact: \n {Jokes.Random()}. \n \n If you grow tired of talking with me just say goodbye!";
                   return Chain.Return(reply);

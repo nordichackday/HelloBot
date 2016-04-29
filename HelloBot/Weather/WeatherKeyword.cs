@@ -25,5 +25,23 @@ namespace HelloBot.Weather
 
             return null;
         }
+
+        public string FindPrognoseOrDefault(string message)
+        {
+            var danishWeatherKeywords = new[] { "prognose for", "prognose" };
+            var weatherKeywords = new List<string[]>() { danishWeatherKeywords };
+            foreach (var weatherKeywordCollection in weatherKeywords)
+            {
+                foreach (var weatherKeyword in weatherKeywordCollection.OrderByDescending(x => x.Length))
+                {
+                    if (message.ToLower().Contains(weatherKeyword + " "))
+                    {
+                        return weatherKeyword;
+                    }
+                }
+            }
+
+            return null;
+        }
     }
 }
